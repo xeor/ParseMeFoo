@@ -3,15 +3,18 @@
 import os
 import sys
 import pickle
+import datetime
 
 import challenges
 
 class Handler:
     challenges = {}
+    userDB = 'user.db'
 
     def __init__(self, lines = 10):
         self.lines = lines
-        self.tmpDirectory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tmp')
+        self.ourDirectory = os.path.dirname(os.path.abspath(__file__))
+        self.tmpDirectory = os.path.join(self.ourDirectory, 'tmp')
         if not os.path.isdir(self.tmpDirectory):
             os.mkdir(self.tmpDirectory)
         self.getChallenges()
@@ -42,6 +45,40 @@ class Handler:
         if arg[1] in self.challenges.keys():
             challengeArg = arg[2] if len(arg) > 2 else None
             self.handleChallenge(arg[1], challengeArg)
+            return None
+
+        self.help()
+
+    def getSolved(self):
+        dbPath = os.path.join(self.ourDirectory, self.userDB)
+        if os.path.isfile(dbPath):
+            dbObj = open(dbPath, 'rb')
+            return pickle.load(dbObj)
+        else:
+            return {}
+
+    def recordSolved(self, challenge):
+        dbPath = os.path.join(self.ourDirectory, self.userDB)
+        if os.path.isfile(dbPath):
+            dbObj = open(dbPath, 'r+')
+            try:
+                recorded = pickle.load(dbObj)
+            except:
+                print 'Got an error reading %s, delete it or fix it.. pickle.load is unable to parse it.. :('
+                print
+        else:
+            dbObj = open(dbPath, 'w+')
+            recorded = {}
+
+        datetimestr = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        recorded[challenge] = {'solved': True, 'timedate': datetimestr}
+
+        # Delete the file content
+        dbObj.seek(0)
+        dbObj.truncate()
+
+        pickle.dump(recorded, dbObj)
+        dbObj.close()
 
     def handleChallenge(self, challenge, arg):
         challengeObj = self.challenges[challenge]
@@ -64,13 +101,14 @@ class Handler:
             return True
 
         if arg == 'done':
-            tmpFileSolution = open(os.path.join(self.tmpDirectory, '%s-solution.tmp' % challenge), 'r')
-            realSolution = pickle.loads(tmpFileSolution.read())
+            tmpFileSolution = open(os.path.join(self.tmpDirectory, '%s-solution.tmp' % challenge), 'r+')
+            realSolution = pickle.load(tmpFileSolution)
             tmpFileSolution.close()
 
             userSolution = [ s.strip() for s in sys.stdin.readlines() ]
 
             if realSolution == userSolution:
+                self.recordSolved(challenge)
                 print 'You did it!'
             else:
                 print 'You failed, FOO!'
@@ -100,14 +138,28 @@ class Handler:
         print 'Usage: %s [ help | list | [ challangeName | [ start | done | help ]]]' % (sys.argv[0],)
 
     def listChallenges(self):
+        solved = self.getSolved().keys()
+        challengeList = {'solved': [], 'unsolved': []}
+
         for challenge in self.challenges:
             challengeObj = self.challenges[challenge]
+
             if getattr(challengeObj, 'description'):
-                description = ' -- (%s)' % getattr(challengeObj, 'description')
+                description = '\t(%s)' % getattr(challengeObj, 'description')
             else:
                 description = ''
 
-            print '%s%s' % (challenge, description)
+            challengeInfo = '%s%s' % (challenge, description)
+            if challenge in solved:
+                challengeList['solved'].append(challengeInfo)
+            else:
+                challengeList['unsolved'].append(challengeInfo)
+
+        for status in challengeList:
+            print '%s:' % status
+            for c in challengeList[status]:
+                print '  %s' % c
+            print
 
 if __name__ == '__main__':
     handler = Handler()
