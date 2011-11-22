@@ -4,6 +4,7 @@ import os
 import sys
 import pickle
 import datetime
+import time
 
 import challenges
 
@@ -102,6 +103,9 @@ class Handler:
 
         if arg == 'done':
             tmpFileSolution = open(os.path.join(self.tmpDirectory, '%s-solution.tmp' % challenge), 'r+')
+
+            # FIXME, bug here, getting EOFError in some conditions, sometimes
+            time.sleep(0.2) # Check if its a racecondition.. temp fix?
             realSolution = pickle.load(tmpFileSolution)
             tmpFileSolution.close()
 
