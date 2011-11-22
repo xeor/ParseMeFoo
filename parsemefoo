@@ -1,0 +1,113 @@
+#!/usr/bin/env python
+
+import os
+import sys
+import pickle
+
+import challenges
+
+class Handler:
+    challenges = {}
+
+    def __init__(self, lines = 10):
+        self.lines = lines
+        self.tmpDirectory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tmp')
+        if not os.path.isdir(self.tmpDirectory):
+            os.mkdir(self.tmpDirectory)
+        self.getChallenges()
+        self.handleParams()
+
+    def getChallenges(self):
+        for root, dirs, files in os.walk('challenges'):
+            for fileName in files:
+                if fileName.endswith('.py') and not fileName.startswith('_'):
+                    challengeName = fileName.replace('.py', '')
+
+                    # Grab and import the Challenge class for the current challenge name, if it exists
+                    try:
+                        self.challenges[challengeName] = getattr(__import__('challenges.%s' % challengeName), challengeName).Challenge()
+                    except AttributeError:
+                        pass
+
+    def handleParams(self):
+        arg = sys.argv
+        if len(arg) <= 1:
+            self.help()
+            return None
+
+        if arg[1] == 'list':
+            self.listChallenges()
+            return None
+
+        if arg[1] in self.challenges.keys():
+            challengeArg = arg[2] if len(arg) > 2 else None
+            self.handleChallenge(arg[1], challengeArg)
+
+    def handleChallenge(self, challenge, arg):
+        challengeObj = self.challenges[challenge]
+        if arg == 'start':
+            lines = self.lines
+            output = []
+            solution = []
+            while lines != 0:
+                line = getattr(challengeObj, 'generate')()
+                output.append(line)
+                solution.append(getattr(challengeObj, 'parse')(line))
+
+                lines -= 1
+
+            tmpFileSolution = open(os.path.join(self.tmpDirectory, '%s-solution.tmp' % challenge), 'w')
+            tmpFileSolution.write(pickle.dumps(solution))
+            tmpFileSolution.close()
+
+            print '\n'.join(output)
+            return True
+
+        if arg == 'done':
+            tmpFileSolution = open(os.path.join(self.tmpDirectory, '%s-solution.tmp' % challenge), 'r')
+            realSolution = pickle.loads(tmpFileSolution.read())
+            tmpFileSolution.close()
+
+            userSolution = [ s.strip() for s in sys.stdin.readlines() ]
+
+            if realSolution == userSolution:
+                print 'You did it!'
+            else:
+                print 'You failed, FOO!'
+
+            return True
+
+        if arg == 'help':
+            output = []
+            solution = []
+            for i in range(4):
+                line = getattr(challengeObj, 'generate')()
+                output.append(line)
+                solution.append(getattr(challengeObj, 'parse')(line))
+
+            print 'Usage: %s %s [start | done | help]' % (sys.argv[0], challenge)
+            print
+            print '## Example output ##'
+            print '\n'.join(output)
+            print
+            print '## Example input ##'
+            print '\n'.join(solution)
+            return True
+
+        self.help(challenge)
+
+    def help(self, challenge = None):
+        print 'Usage: %s [ help | list | [ challangeName | [ start | done | help ]]]' % (sys.argv[0],)
+
+    def listChallenges(self):
+        for challenge in self.challenges:
+            challengeObj = self.challenges[challenge]
+            if getattr(challengeObj, 'description'):
+                description = ' -- (%s)' % getattr(challengeObj, 'description')
+            else:
+                description = ''
+
+            print '%s%s' % (challenge, description)
+
+if __name__ == '__main__':
+    handler = Handler()
