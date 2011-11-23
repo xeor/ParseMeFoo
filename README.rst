@@ -83,4 +83,8 @@ generate some text in generate() do something with it in parse(), and
 ParseMeDo will take care of the rest :)
 
 
+Yea, and please... If you come up with some cool challenges, fork the
+project, mail it to me, upload it to pastebin and give me a link on
+irc.. Just let me add it.. :=)
+
 Happy Parsing!
