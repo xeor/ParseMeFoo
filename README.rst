@@ -54,6 +54,13 @@ Example
    dummy (Dummy challenge which outputs the solution)
 
 
+Installation
+------------
+
+* Using git: git clone git://github.com/xeor/ParseMeFoo.git
+* Using wget: wget https://github.com/xeor/ParseMeFoo/zipball/master -O parsemefoo.zip && unzip parsemefoo.zip
+
+
 Contribute
 ----------
 
