@@ -128,6 +128,9 @@ class Handler:
                 solution.append(getattr(challengeObj, 'parse')(line))
 
             print 'Usage: %s %s [start | done | help]' % (sys.argv[0], challenge)
+            if hasattr(challengeObj, 'help'):
+                print
+                print getattr(challengeObj, 'help')()
             print
             print '## Example output ##'
             print '\n'.join(output)
@@ -135,6 +138,11 @@ class Handler:
             print '## Example input ##'
             print '\n'.join(solution)
             return True
+
+        if arg == 'test':
+            # Send two examples and solutions to stderr, and the same
+            # two to stdout, so the user can test live and see what differs
+            pass
 
         self.help(challenge)
 
