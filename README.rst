@@ -25,6 +25,8 @@ how the line should look like if you did the right thing to it.
 Example
 -------
 
+::
+
   $ ./parsemefoo basic_swapper help
   Usage: ./parsemefoo basic_swapper [start | done | help]
   
@@ -61,6 +63,8 @@ create your own challenges and contribute to the project.
 Copy the dummy.py file in the challenges folder and edit it..
 
 Here is one of the simplest challenges called upperme.
+
+::
 
  class Challenge:
      author = 'Your Name'
