@@ -29,16 +29,16 @@ Example
   Usage: ./parsemefoo basic_swapper [start | done | help]
   
   ## Example output ##
-  SYJJBCYF I2JMT997
-  J1GS6B23 AADKAYOJ
-  SGBEVOG4 18TM9XBD
-  IIW3D64A 26TDUV1H
+  SYJJBCYF I2JMT997 
+  J1GS6B23 AADKAYOJ 
+  SGBEVOG4 18TM9XBD 
+  IIW3D64A 26TDUV1H 
   
   ## Example input ##
-  I2JMT997 SYJJBCYF
-  AADKAYOJ J1GS6B23
-  18TM9XBD SGBEVOG4
-  26TDUV1H IIW3D64A
+  I2JMT997 SYJJBCYF 
+  AADKAYOJ J1GS6B23 
+  18TM9XBD SGBEVOG4 
+  26TDUV1H IIW3D64A 
 
   $ ./parsemefoo basic_swapper start | awk {' print $2" "$1 '} | ./parsemefoo basic_swapper done
   You did it!
