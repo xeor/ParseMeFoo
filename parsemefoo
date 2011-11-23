@@ -140,9 +140,18 @@ class Handler:
             return True
 
         if arg == 'test':
-            # Send two examples and solutions to stderr, and the same
-            # two to stdout, so the user can test live and see what differs
-            pass
+            output = []
+            solution = []
+            for i in range(2):
+                line = getattr(challengeObj, 'generate')()
+                output.append(line)
+                solution.append(getattr(challengeObj, 'parse')(line))
+            sys.stderr.write('Example output:\n%s\n\n' % '\n'.join(output))
+            sys.stderr.write('Example solution:\n%s\n\n' % '\n'.join(solution))
+            sys.stderr.write('Your progress:')
+            print '%s' % '\n'.join(output)
+            sys.stderr.write('\n')
+            return True
 
         self.help(challenge)
 
