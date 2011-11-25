@@ -127,7 +127,7 @@ class Handler:
                 output.append(line)
                 solution.append(getattr(challengeObj, 'parse')(line))
 
-            print 'Usage: %s %s [start | done | help]' % (sys.argv[0], challenge)
+            print 'Usage: %s %s [ test | start | done | help ]' % (sys.argv[0], challenge)
             if hasattr(challengeObj, 'help'):
                 print
                 print getattr(challengeObj, 'help')()
@@ -148,15 +148,15 @@ class Handler:
                 solution.append(getattr(challengeObj, 'parse')(line))
             sys.stderr.write('Example output:\n%s\n\n' % '\n'.join(output))
             sys.stderr.write('Example solution:\n%s\n\n' % '\n'.join(solution))
-            sys.stderr.write('Your progress:')
-            print '%s' % '\n'.join(output)
-            sys.stderr.write('\n')
+            sys.stderr.write('Your progress:\n')
+            print '%s' % '\n'.join(output),
+
             return True
 
         self.help(challenge)
 
     def help(self, challenge = None):
-        print 'Usage: %s [ help | list | [ challangeName | [ start | done | help ]]]' % (sys.argv[0],)
+        print 'Usage: %s [ help | list | [ challangeName | [ test | start | done | help ]]]' % (sys.argv[0],)
 
     def listChallenges(self):
         solved = self.getSolved().keys()
