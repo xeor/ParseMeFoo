@@ -42,6 +42,19 @@ Example
   18TM9XBD SGBEVOG4 
   26TDUV1H IIW3D64A 
 
+  $ ./parsemefoo basic_swapper test | awk {' print $2 $1 '}
+  Example output:
+  1JZ700QV HP8EXC1D
+  7Y9SA3U5 1LMXIFZY
+  
+  Example solution:
+  HP8EXC1D 1JZ700QV
+  1LMXIFZY 7Y9SA3U5
+  
+  Your progress:
+  HP8EXC1D1JZ700QV
+  1LMXIFZY7Y9SA3U5
+
   $ ./parsemefoo basic_swapper start | awk {' print $2" "$1 '} | ./parsemefoo basic_swapper done
   You did it!
 
