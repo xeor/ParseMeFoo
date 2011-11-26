@@ -67,6 +67,16 @@ Example
    dummy (Dummy challenge which outputs the solution)
 
 
+Solving with python
+-------------------
+
+There is a little python script called solver.py which is a template
+for a very minimal pythonscript you will need to use as a pipe in one
+of the challenges. To use it, just change the content of the trySolve
+function inside and use it as a pipe like:
+  ./parsemefoo dummy start | ./solver.py
+
+
 Installation
 ------------
 
